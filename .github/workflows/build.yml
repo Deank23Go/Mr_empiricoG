@@ -34,7 +34,7 @@ jobs:
           token: ${{ e2e828db27adfc65a393648f91cb93c8b9d2b143 }}  # 👈 Debes guardar el token en GitHub Secrets
 
       - name: Build with Gradle Wrapper and analyze with SonarCloud
-        run: ./gradlew clean build sonarqube \
+        run: bash ./gradlew clean build sonarqube \
           -Dsonar.projectKey=Deank23Go_Mr_EmpiricoG \  # 👈 Tu projectKey
           -Dsonar.organization=deank23go \            # 👈 Tu organización
           -Dsonar.host.url=https://sonarcloud.io
