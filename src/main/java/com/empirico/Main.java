@@ -1,0 +1,23 @@
+package com.empirico;
+
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+
+import java.net.URI;
+
+public class Main {
+    public static final String BASE_URI = "http://localhost:8080/api/";
+
+    public static void main(String[] args) {
+        final ResourceConfig rc = new ResourceConfig().packages("com.empirico.API");
+        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+        System.out.println("Servidor REST iniciado en " + BASE_URI);
+        System.out.println("Presiona CTRL+C para detenerlo...");
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
