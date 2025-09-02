@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'application'
+    id "org.sonarqube" version "6.3.1.5724"
+}
+
+group = 'com.empirico'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
+    implementation 'com.h2database:h2:2.2.224'
+    implementation 'org.hibernate.orm:hibernate-core:6.3.1.Final'
+
+    // Jersey + Grizzly para REST
+    implementation 'org.glassfish.jersey.core:jersey-server:3.1.5'
+    implementation 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:3.1.5'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:3.1.5'
+}
+
+application {
+    mainClass = 'com.empirico.Main'
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "Deank23Go_Mr_empiricoG"
+        property "sonar.organization", "deank23go"
+
+    }
+}
