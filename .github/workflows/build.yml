@@ -1,17 +1,26 @@
+# workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle, cache dependencies,
+# and analyze with SonarCloud
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
 name: Java CI with Gradle and SonarCloud
 
 on:
   push:
-    branches: [ "developer" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "developer" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
+      id-token: write  # necesario para SonarCloud
 
     steps:
       - uses: actions/checkout@v4
@@ -22,18 +31,25 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
+      # Setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
-      - name: Build and analyze with SonarCloud
+      # Forzar ejecución de gradlew
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      # Build with Gradle and analyze with SonarCloud
+      - name: Build with Gradle Wrapper and analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew clean build sonarqube \
+        run: bash gradlew clean build sonarqube \
           -Dsonar.projectKey=Deank23Go_Mr_empiricoG \
           -Dsonar.organization=deank23go \
           -Dsonar.host.url=https://sonarcloud.io
 
   dependency-submission:
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -48,7 +64,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
+        run: chmod +x gradlew
 
       - name: Generate and submit dependency graph
-        run: ./gradlew --no-daemon dependencySubmission
+        run: bash gradlew --no-daemon dependencySubmission
