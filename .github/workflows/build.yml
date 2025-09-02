@@ -2,10 +2,12 @@ name: SonarQube
 on:
   push:
     branches:
-      [main, developer]   # 👈 Aquí en vez de main
+      - main
+      - developer   # 👈 También en developer
   pull_request:
     branches:
-      [main, developer]   # 👈 PRs hacia developer
+      - main
+      - developer   # 👈 También cuando abras PR hacia developer o main
     types: [opened, synchronize, reopened]
 
 jobs:
