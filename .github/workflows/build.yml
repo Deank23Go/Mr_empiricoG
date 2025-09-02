@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write  # Necesario para el escaneo con SonarCloud
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -22,22 +22,25 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Setup Gradle
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
-      # SonarCloud Setup
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
       - name: Set up SonarCloud
         uses: SonarSource/sonarcloud-github-action@v2.1
         with:
-          organization: deank23go  # 👈 Tu organización en SonarCloud
-          token: ${{ e2e828db27adfc65a393648f91cb93c8b9d2b143 }}  # 👈 Debes guardar el token en GitHub Secrets
+          organization: deank23go
+          token: ${{ secrets.SONAR_TOKEN }}
 
       - name: Build with Gradle Wrapper and analyze with SonarCloud
         run: bash ./gradlew clean build sonarqube \
-          -Dsonar.projectKey=Deank23Go_Mr_empiricoG \  # 👈 Tu projectKey
-          -Dsonar.organization=deank23go \            # 👈 Tu organización
+          -Dsonar.projectKey=Deank23Go_Mr_empiricoG \
+          -Dsonar.organization=deank23go \
           -Dsonar.host.url=https://sonarcloud.io
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   dependency-submission:
     runs-on: ubuntu-latest
@@ -54,4 +57,4 @@ jobs:
           distribution: 'temurin'
 
       - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582
