@@ -1,25 +1,36 @@
 package com.empirico.repository;
 
 import com.empirico.Model.Equipo;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EquipoRepository {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("mantenimientoPU");
+    private List<Equipo> equipos = new ArrayList<>();
+    private long idCounter = 1;
 
-    public List<Equipo> findAll() {
-        EntityManager em = emf.createEntityManager();
-        return em.createQuery("SELECT e FROM Equipo e", Equipo.class).getResultList();
+    public List<Equipo> findAll() { return equipos; }
+
+    public Equipo findById(Long id) {
+        Optional<Equipo> result = equipos.stream()
+                .filter(e -> e.getId().equals(id))
+                .findFirst();
+        return result.orElse(null);
     }
 
-    public Equipo save(Equipo equipo) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        em.persist(equipo);
-        em.getTransaction().commit();
-        em.close();
-        return equipo;
+    public void save(Equipo equipo) {
+        equipo.setId(idCounter++);
+        equipos.add(equipo);
     }
+
+    public void update(Equipo equipo) {
+        for (int i = 0; i < equipos.size(); i++) {
+            if (equipos.get(i).getId().equals(equipo.getId())) {
+                equipos.set(i, equipo);
+                return;
+            }
+        }
+    }
+
+    public void delete(Long id) { equipos.removeIf(e -> e.getId().equals(id)); }
 }

@@ -1,21 +1,15 @@
 package com.empirico.Model;
 
-import jakarta.persistence.*;
-
-@Entity
 public class Equipo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nombre;
-    private String tipo;
+    private String descripcion;
 
     public Equipo() {}
 
-    public Equipo(String nombre, String tipo) {
+    public Equipo(String nombre, String descripcion) {
         this.nombre = nombre;
-        this.tipo = tipo;
+        this.descripcion = descripcion;
     }
 
     public Long getId() { return id; }
@@ -24,6 +18,6 @@ public class Equipo {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 }
