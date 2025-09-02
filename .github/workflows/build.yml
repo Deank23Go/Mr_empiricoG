@@ -35,7 +35,7 @@ jobs:
 
       - name: Build with Gradle Wrapper and analyze with SonarCloud
         run: bash ./gradlew clean build sonarqube \
-          -Dsonar.projectKey=Deank23Go_Mr_EmpiricoG \  # 👈 Tu projectKey
+          -Dsonar.projectKey=Deank23Go_Mr_empiricoG \  # 👈 Tu projectKey
           -Dsonar.organization=deank23go \            # 👈 Tu organización
           -Dsonar.host.url=https://sonarcloud.io
 
