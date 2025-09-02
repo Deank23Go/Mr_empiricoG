@@ -28,7 +28,7 @@ application {
 
 sonar {
     properties {
-        property "sonar.projectKey", "Deank23Go_Mr_Empirico"
+        property "sonar.projectKey", "Deank23Go_Mr_empiricoG"
         property "sonar.organization", "deank23go"
         property "sonar.host.url", "https://sonarcloud.io"
         // ⚠️ IMPORTANTE: genera tu token en SonarCloud y pásalo con:
