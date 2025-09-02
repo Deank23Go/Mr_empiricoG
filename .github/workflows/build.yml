@@ -1,41 +1,57 @@
-name: SonarQube
+name: Java CI with Gradle and SonarCloud
+
 on:
   push:
-    branches:
-      - main
-      - developer   # 👈 También en developer
+    branches: [ "developer" ]
   pull_request:
-    branches:
-      - main
-      - developer   # 👈 También cuando abras PR hacia developer o main
-    types: [opened, synchronize, reopened]
+    branches: [ "developer" ]
 
 jobs:
   build:
-    name: Build and analyze
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Necesario para el escaneo con SonarCloud
+
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: 'zulu'
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+      # SonarCloud Setup
+      - name: Set up SonarCloud
+        uses: SonarSource/sonarcloud-github-action@v2.1
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
+          organization: deank23go  # 👈 Tu organización en SonarCloud
+          token: ${{ e2e828db27adfc65a393648f91cb93c8b9d2b143 }}  # 👈 Debes guardar el token en GitHub Secrets
+
+      - name: Build with Gradle Wrapper and analyze with SonarCloud
+        run: ./gradlew clean build sonarqube \
+          -Dsonar.projectKey=Deank23Go_Mr_Empirico \  # 👈 Tu projectKey
+          -Dsonar.organization=deank23go \            # 👈 Tu organización
+          -Dsonar.host.url=https://sonarcloud.io
+
+  dependency-submission:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonarqube --info
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
