@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>ci.yml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #bcbec4;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ci.yml</font>
+</center></td></tr></table>
+<pre><span class="s0">name</span><span class="s1">: </span><span class="s3">SonarQube</span>
+<span class="s0">on</span><span class="s1">:</span>
+  <span class="s0">push</span><span class="s1">:</span>
+    <span class="s0">branches</span><span class="s1">:</span>
+      <span class="s1">- </span><span class="s3">developer</span>
+  <span class="s0">pull_request</span><span class="s1">:</span>
+    <span class="s0">types</span><span class="s1">: [</span><span class="s3">opened</span><span class="s1">, </span><span class="s3">synchronize</span><span class="s1">, </span><span class="s3">reopened</span><span class="s1">]</span>
+<span class="s0">jobs</span><span class="s1">:</span>
+  <span class="s0">build</span><span class="s1">:</span>
+    <span class="s0">name</span><span class="s1">: </span><span class="s3">Build and analyze</span>
+    <span class="s0">runs-on</span><span class="s1">: </span><span class="s3">ubuntu-latest</span>
+    <span class="s0">steps</span><span class="s1">:</span>
+      <span class="s1">- </span><span class="s0">uses</span><span class="s1">: </span><span class="s3">actions/checkout@v4</span>
+        <span class="s0">with</span><span class="s1">:</span>
+          <span class="s0">fetch-depth</span><span class="s1">: </span><span class="s3">0  </span><span class="s4"># Shallow clones should be disabled for a better relevancy of analysis</span>
+      <span class="s1">- </span><span class="s0">name</span><span class="s1">: </span><span class="s3">Set up JDK 17</span>
+        <span class="s0">uses</span><span class="s1">: </span><span class="s3">actions/setup-java@v4</span>
+        <span class="s0">with</span><span class="s1">:</span>
+          <span class="s0">java-version</span><span class="s1">: </span><span class="s3">17</span>
+          <span class="s0">distribution</span><span class="s1">: </span><span class="s5">'zulu' </span><span class="s4"># Alternative distribution options are available</span>
+      <span class="s1">- </span><span class="s0">name</span><span class="s1">: </span><span class="s3">Cache SonarQube packages</span>
+        <span class="s0">uses</span><span class="s1">: </span><span class="s3">actions/cache@v4</span>
+        <span class="s0">with</span><span class="s1">:</span>
+          <span class="s0">path</span><span class="s1">: </span><span class="s3">~/.sonar/cache</span>
+          <span class="s0">key</span><span class="s1">: </span><span class="s3">${{ runner.os }}-sonar</span>
+          <span class="s0">restore-keys</span><span class="s1">: </span><span class="s3">${{ runner.os }}-sonar</span>
+      <span class="s1">- </span><span class="s0">name</span><span class="s1">: </span><span class="s3">Cache Gradle packages</span>
+        <span class="s0">uses</span><span class="s1">: </span><span class="s3">actions/cache@v4</span>
+        <span class="s0">with</span><span class="s1">:</span>
+          <span class="s0">path</span><span class="s1">: </span><span class="s3">~/.gradle/caches</span>
+          <span class="s0">key</span><span class="s1">: </span><span class="s3">${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}</span>
+          <span class="s0">restore-keys</span><span class="s1">: </span><span class="s3">${{ runner.os }}-gradle</span>
+      <span class="s1">- </span><span class="s0">name</span><span class="s1">: </span><span class="s3">Build and analyze</span>
+        <span class="s0">env</span><span class="s1">:</span>
+          <span class="s0">SONAR_TOKEN</span><span class="s1">: </span><span class="s3">${{ secrets.SONAR_TOKEN }}</span>
+        <span class="s0">run</span><span class="s1">: </span><span class="s3">./gradlew build sonar --info</span></pre>
+</body>
+</html>

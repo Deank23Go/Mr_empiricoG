@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>qodana_code_quality.yml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #5f826b; font-style: italic;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #bcbec4;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+qodana_code_quality.yml</font>
+</center></td></tr></table>
+<pre><span class="s0">#-------------------------------------------------------------------------------#</span>
+<span class="s0">#            Discover all capabilities of Qodana in our documentation           #</span>
+<span class="s0">#             https://www.jetbrains.com/help/qodana/about-qodana.html           #</span>
+<span class="s0">#-------------------------------------------------------------------------------#</span>
+
+<span class="s2">name</span><span class="s3">: </span><span class="s4">Qodana</span>
+<span class="s2">on</span><span class="s3">:</span>
+  <span class="s2">workflow_dispatch</span><span class="s3">:</span>
+  <span class="s2">pull_request</span><span class="s3">:</span>
+  <span class="s2">push</span><span class="s3">:</span>
+    <span class="s2">branches</span><span class="s3">:</span>
+      <span class="s3">- </span><span class="s4">main</span>
+
+<span class="s2">jobs</span><span class="s3">:</span>
+  <span class="s2">qodana</span><span class="s3">:</span>
+    <span class="s2">runs-on</span><span class="s3">: </span><span class="s4">ubuntu-latest</span>
+    <span class="s2">permissions</span><span class="s3">:</span>
+      <span class="s2">contents</span><span class="s3">: </span><span class="s4">write</span>
+      <span class="s2">pull-requests</span><span class="s3">: </span><span class="s4">write</span>
+      <span class="s2">checks</span><span class="s3">: </span><span class="s4">write</span>
+    <span class="s2">steps</span><span class="s3">:</span>
+      <span class="s3">- </span><span class="s2">uses</span><span class="s3">: </span><span class="s4">actions/checkout@v4</span>
+        <span class="s2">with</span><span class="s3">:</span>
+          <span class="s2">ref</span><span class="s3">: </span><span class="s4">${{ github.event.pull_request.head.sha }}</span>
+          <span class="s2">fetch-depth</span><span class="s3">: </span><span class="s4">0</span>
+      <span class="s3">- </span><span class="s2">name</span><span class="s3">: </span><span class="s5">'Qodana Scan'</span>
+        <span class="s2">uses</span><span class="s3">: </span><span class="s4">JetBrains/qodana-action@v2025.2</span>
+        <span class="s2">env</span><span class="s3">:</span>
+          <span class="s2">QODANA_TOKEN</span><span class="s3">: </span><span class="s4">${{ secrets.QODANA_TOKEN }}</span>
+        <span class="s2">with</span><span class="s3">:</span>
+          <span class="s0"># In pr-mode: 'true' Qodana checks only changed files</span>
+          <span class="s2">pr-mode</span><span class="s3">: </span><span class="s4">false</span>
+          <span class="s2">use-caches</span><span class="s3">: </span><span class="s4">true</span>
+          <span class="s2">post-pr-comment</span><span class="s3">: </span><span class="s4">true</span>
+          <span class="s2">use-annotations</span><span class="s3">: </span><span class="s4">true</span>
+          <span class="s0"># Upload Qodana results (SARIF, other artifacts, logs) as an artifact to the job</span>
+          <span class="s2">upload-result</span><span class="s3">: </span><span class="s4">false</span>
+          <span class="s0"># quick-fixes available in Ultimate and Ultimate Plus plans</span>
+          <span class="s2">push-fixes</span><span class="s3">: </span><span class="s5">'none'</span></pre>
+</body>
+</html>

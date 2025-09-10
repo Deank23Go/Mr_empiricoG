@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: sgm_user
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: sgm   # esquema donde se crean las tablas
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    schemas: sgm             # Flyway también usa este esquema
+
+server:
+  port: 8080
