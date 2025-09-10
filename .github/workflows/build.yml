@@ -2,7 +2,7 @@ name: SonarQube
 on:
   push:
     branches:
-      - develop   # 🔧 asegúrate de que coincida con tu rama activa
+      - developer   # 🔧 asegúrate de que coincida con tu rama activa
   pull_request:
     types: [opened, synchronize, reopened]
 
