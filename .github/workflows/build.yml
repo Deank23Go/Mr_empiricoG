@@ -2,7 +2,7 @@ name: SonarQube
 on:
   push:
     branches:
-      - developer   # 🔧 asegúrate de que coincida con tu rama activa
+      - developer  
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -35,7 +35,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Grant execute permission for gradlew   # 👈 paso agregado para evitar Permission denied
+      - name: Grant execute permission for gradlew  
         run: chmod +x gradlew
 
       - name: Build and analyze
